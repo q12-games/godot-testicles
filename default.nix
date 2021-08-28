@@ -11,9 +11,11 @@ in
       rustup
 
       # Dev
+      godot-headless
+      nodePackages.nodemon
       rust-analyzer
 
-      # Lib
+      # Deps
       libclang
       xorg.libX11
       xorg.libXi
