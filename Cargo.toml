@@ -5,8 +5,8 @@ authors = ["Akshay Nair <phenax5@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-gdnative = "0.9.3"
-euclid = "0.22.3"
-stdext = "0.2.1"
-regex = "1.5.4"
+gdnative = "0.9"
+euclid = "0.22"
+stdext = "0.2"
+regex = "1.5"
 

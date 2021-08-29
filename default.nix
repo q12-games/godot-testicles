@@ -1,35 +1,22 @@
 let
   nixpkgs = import <nixpkgs> {};
-  rust_channel = nixpkgs.rust.packages.stable;
+  rust_pkgs = nixpkgs.rust.packages.stable;
 in
   with nixpkgs;
   mkShell rec {
     buildInputs = [
-      # Build
-      pkgconfig
-      patchelf
-      rustup
-
-      # Dev
-      godot-headless
-      nodePackages.nodemon
+      rust_pkgs.cargo
+      rust_pkgs.rustc
+      rust_pkgs.rustfmt
+      rust_pkgs.clippy
       rust-analyzer
-
-      # Deps
       libclang
-      xorg.libX11
-      xorg.libXi
-      libGL
-      xorg.libXcursor
-      xorg.libXinerama
-      xorg.libXext
-      xorg.libXrandr
-      xorg.libXrender
     ];
-    nativeBuildInputs = [ clang ];
+
+    nativeBuildInputs = [ clang pkgconfig ];
 
     #RUST_BACKTRACE = 1;
     LIBCLANG_PATH = "${libclang.lib}/lib";
-    RUST_SRC_PATH = rust_channel.rustPlatform.rustLibSrc;
+    RUST_SRC_PATH = rust_pkgs.rustPlatform.rustLibSrc;
     LD_LIBRARY_PATH = lib.makeLibraryPath (buildInputs ++ nativeBuildInputs);
   }
