@@ -1,5 +1,6 @@
 #[macro_use]
 
+pub mod build;
 mod expect;
 pub use expect::*;
 
