@@ -1,54 +1,13 @@
+#[macro_use]
+
+mod expect;
+pub use expect::*;
+
 use gdnative::{
   api::{GDNativeLibrary, NativeScript, Node},
   prelude::Unique,
   GodotObject, Ref, TRef,
 };
-
-pub struct AssertionValue<T> {
-  prefix: String,
-  value: T,
-}
-
-pub type AssertionResult = Result<(), String>;
-
-impl<T> AssertionValue<T> {
-  pub fn new(prefix: String, v: T) -> Self {
-    Self { prefix, value: v }
-  }
-}
-
-impl AssertionValue<bool> {
-  pub fn to_be_true(&self) -> AssertionResult {
-    self.to_equal(true)
-  }
-  pub fn to_be_false(&self) -> AssertionResult {
-    self.to_equal(false)
-  }
-}
-impl<T: PartialEq + std::fmt::Debug> AssertionValue<T> {
-  pub fn to_equal(&self, val: T) -> AssertionResult {
-    if val == self.value {
-      Ok(())
-    } else {
-      Err(format!(
-        "{}\n - AssertionError: value {:?} does not equal {:?}",
-        self.prefix, self.value, val
-      ))
-    }
-  }
-}
-impl<T: euclid::approxeq::ApproxEq<T> + std::fmt::Debug> AssertionValue<T> {
-  pub fn to_approx_equal(&self, val: T) -> AssertionResult {
-    if val.approx_eq(&self.value) {
-      Ok(())
-    } else {
-      Err(format!(
-        "{}\n - AssertionError: value {:?} does not approx. equal {:?}",
-        self.prefix, self.value, val
-      ))
-    }
-  }
-}
 
 static mut ROOT_NODE: Option<Ref<Node>> = None;
 pub fn get_root_node() -> Result<TRef<'static, Node>, String> {
@@ -137,16 +96,9 @@ macro_rules! run_tests {
 }
 
 #[macro_export]
-macro_rules! expect {
-  ($val:expr) => {
-    AssertionValue::new(godot_testicles::get_path!(), $val)
-  };
-}
-
-#[macro_export]
 macro_rules! d {
   ($val:expr) => {
-    godot_print!("{} > {}", godot_testicles::get_path!(), $val);
+    gdnative::godot_print!("[ {} ] => {}", godot_testicles::get_path!(), $val);
   };
 }
 
@@ -160,7 +112,7 @@ macro_rules! testicles {
     })*
 
     pub fn run(prefix: &str, pattern: &Option<String>) -> godot_testicles::AssertionResult {
-      let skip_prefix = "_skip_";
+      let skip_prefix = "__skip_";
       match pattern {
         Some(pattern) => {
           let pattern = regex::Regex::new(&pattern[..]).map_err(|_| "Invalid test path pattern".to_string())?;
@@ -204,4 +156,3 @@ macro_rules! node {
     node
   }}
 }
-
