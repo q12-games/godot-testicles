@@ -65,15 +65,15 @@ fn get_run_test_script(config: &Config, scene: &str) -> String {
 }
 
 pub struct Config<'a> {
-  godot_cmd: &'a str,
-  test_script_path: &'a str,
-  gdnlib_path: &'a str,
+  pub godot_cmd: &'a str,
+  pub test_script_path: &'a str,
+  pub gdnlib_path: &'a str,
 }
 
 impl Config<'_> {
   pub fn default() -> Self {
     Self {
-      godot_cmd: "godot-headless",
+      godot_cmd: "godot",
       test_script_path: "./run-tests.sh",
       gdnlib_path: "res://test/lib.gdnlib",
     }
