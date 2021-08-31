@@ -143,17 +143,24 @@ macro_rules! testicles {
 macro_rules! node {
   (
     $type:ty,
-    { $( $key:ident : $value:expr , )* },
-    $setup: expr,
-    [ $( $child:expr , )* ]
+    { $($key:ident : $value:expr),* $(,)? },
+    [ $($child:expr),* $(,)? ]
   ) => {{
     let node = unsafe { <$type>::new().into_shared().assume_safe() };
-
+    $(node.set(stringify!($key), $value);)*
+    $(node.add_child($child, false);)*
+    node
+  }};
+  (
+    $type:ty,
+    { $($key:ident : $value:expr),* $(,)? },
+    $setup: expr,
+    [ $($child:expr),* $(,)? ]
+  ) => {{
+    let node = unsafe { <$type>::new().into_shared().assume_safe() };
     $(node.set(stringify!($key), $value);)*
     $setup(node);
-
     $(node.add_child($child, false);)*
-
     node
-  }}
+  }};
 }
