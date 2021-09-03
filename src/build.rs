@@ -1,5 +1,4 @@
-use std::env;
-use std::fs;
+use std::{env, fs, path::Path};
 
 fn get_runner_script(lib: &str) -> String {
   return format!(
@@ -54,7 +53,7 @@ script = ExtResource( 1 )"#,
 fn get_run_test_script(config: &Config, scene: &str) -> String {
   return format!(
     r#"
-#!/usr/bin/env bash
+#!/usr/bin/env sh
 # NOTE: DO NOT include this in version control
 
 {godot} --path . {scene} "$@";
@@ -82,19 +81,20 @@ impl Config<'_> {
 
 pub fn setup(config: Config<'_>) -> std::io::Result<()> {
   let out_dir = env::var("OUT_DIR").expect("Env OUT_DIR not set");
+  let out_dir = Path::new(&out_dir);
 
   // Create runner gdscript file
-  let runner_path = format!("{}/{}", out_dir, "test-runner.gd");
+  let runner_path = out_dir.join("test-runner.gd");
   let runner_script = get_runner_script(config.gdnlib_path);
   fs::write(&runner_path, runner_script)?;
 
   // Create main node file
-  let main_scene_path = format!("{}/{}", out_dir, "Main.tscn");
-  let main_scene = get_main(&runner_path);
+  let main_scene_path = out_dir.join("Main.tscn");
+  let main_scene = get_main(runner_path.to_str().unwrap());
   fs::write(&main_scene_path, main_scene)?;
 
   // Create run-tests.sh file
-  let test_script = get_run_test_script(&config, &main_scene_path);
+  let test_script = get_run_test_script(&config, main_scene_path.to_str().unwrap());
   fs::write(&config.test_script_path, test_script)?;
 
   Ok(())
