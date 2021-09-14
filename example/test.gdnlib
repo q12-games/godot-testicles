@@ -1,0 +1,11 @@
+[entry]
+X11.64="res://target/debug/libgame_test.so"
+Server.64="res://target/debug/libgame_test.so"
+OSX.64="res://target/debug/libgame_test.dylib"
+Windows.64="res://target/debug/game_test.dll"
+
+[general]
+singleton=false
+load_once=true
+symbol_prefix="godot_"
+reloadable=true

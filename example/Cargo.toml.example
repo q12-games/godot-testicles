@@ -1,0 +1,15 @@
+[package]
+name = "game_test"
+version = "0.0.0"
+
+[dependencies]
+gdnative = "0.9.3"
+stdext = "0.2.1"
+regex = "1.5.4"
+godot-testicles = "0.0"
+
+[build-dependencies]
+godot-testicles = "0.0"
+
+[lib]
+crate-type = ["cdylib"]
